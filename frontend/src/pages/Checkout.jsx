@@ -134,7 +134,7 @@ const Checkout = () => {
                                             <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Street Address</label>
                                             <input 
                                                 type="text" name="street" value={formData.street} onChange={handleChange}
-                                                className="w-full px-5 py-4 bg-white border border-stone-200 rounded-2xl font-bold text-slate-900 focus:bg-[#20202e] focus:border-amber-500/50 focus:ring-4 focus:ring-amber-500/10 outline-none transition-all placeholder:text-slate-600"
+                                                className="w-full px-5 py-4 bg-white border border-stone-200 rounded-2xl font-bold text-slate-900 focus:bg-stone-50 focus:border-amber-500/50 focus:ring-4 focus:ring-amber-500/10 outline-none transition-all placeholder:text-slate-400"
                                                 placeholder="House/Flat No., Building Name, Street"
                                             />
                                         </div>
@@ -143,14 +143,14 @@ const Checkout = () => {
                                                 <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">City</label>
                                                 <input 
                                                     type="text" name="city" value={formData.city} onChange={handleChange}
-                                                    className="w-full px-5 py-4 bg-white border border-stone-200 rounded-2xl font-bold text-slate-900 focus:bg-[#20202e] focus:border-amber-500/50 focus:ring-4 focus:ring-amber-500/10 outline-none transition-all placeholder:text-slate-600"
+                                                    className="w-full px-5 py-4 bg-white border border-stone-200 rounded-2xl font-bold text-slate-900 focus:bg-stone-50 focus:border-amber-500/50 focus:ring-4 focus:ring-amber-500/10 outline-none transition-all placeholder:text-slate-400"
                                                 />
                                             </div>
                                             <div>
                                                 <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">PIN/ZIP Code</label>
                                                 <input 
                                                     type="text" name="zip" value={formData.zip} onChange={handleChange}
-                                                    className="w-full px-5 py-4 bg-white border border-stone-200 rounded-2xl font-bold text-slate-900 focus:bg-[#20202e] focus:border-amber-500/50 focus:ring-4 focus:ring-amber-500/10 outline-none transition-all placeholder:text-slate-600"
+                                                    className="w-full px-5 py-4 bg-white border border-stone-200 rounded-2xl font-bold text-slate-900 focus:bg-stone-50 focus:border-amber-500/50 focus:ring-4 focus:ring-amber-500/10 outline-none transition-all placeholder:text-slate-400"
                                                 />
                                             </div>
                                         </div>
@@ -159,15 +159,14 @@ const Checkout = () => {
                                                 <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Service Date</label>
                                                 <input 
                                                     type="date" name="date" value={formData.date} onChange={handleChange}
-                                                    className="w-full px-5 py-4 bg-white border border-stone-200 rounded-2xl font-bold text-slate-900 focus:bg-[#20202e] focus:border-amber-500/50 focus:ring-4 focus:ring-amber-500/10 outline-none transition-all color-scheme-dark"
-                                                    style={{colorScheme: 'dark'}}
+                                                    className="w-full px-5 py-4 bg-white border border-stone-200 rounded-2xl font-bold text-slate-900 focus:bg-stone-50 focus:border-amber-500/50 focus:ring-4 focus:ring-amber-500/10 outline-none transition-all"
                                                 />
                                             </div>
                                             <div>
                                                 <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Preferred Time</label>
                                                 <select 
                                                     name="timeSlot" value={formData.timeSlot} onChange={handleChange}
-                                                    className="w-full px-5 py-4 bg-white border border-stone-200 rounded-2xl font-bold text-slate-900 focus:bg-[#20202e] focus:border-amber-500/50 focus:ring-4 focus:ring-amber-500/10 outline-none transition-all"
+                                                    className="w-full px-5 py-4 bg-white border border-stone-200 rounded-2xl font-bold text-slate-900 focus:bg-stone-50 focus:border-amber-500/50 focus:ring-4 focus:ring-amber-500/10 outline-none transition-all"
                                                 >
                                                     <option>09:00 AM - 11:00 AM</option>
                                                     <option>11:00 AM - 01:00 PM</option>

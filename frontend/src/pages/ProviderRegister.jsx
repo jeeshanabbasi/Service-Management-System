@@ -24,7 +24,7 @@ const itemVariants = {
     show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
 };
 
-const Register = () => {
+const ProviderRegister = () => {
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
@@ -33,7 +33,11 @@ const Register = () => {
         confirmPassword: '',
         phone: '',
         gender: 'Male',
-        role: 'user'
+        role: 'provider',
+        address: '',
+        state: '',
+        district: '',
+        skills: []
     });
     const [loading, setLoading] = useState(false);
     const { register } = useContext(AuthContext);
@@ -51,6 +55,20 @@ const Register = () => {
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
+
+    const handleSkillToggle = (skill) => {
+        const currentSkills = formData.skills || [];
+        if (currentSkills.includes(skill)) {
+            setFormData({ ...formData, skills: currentSkills.filter(s => s !== skill) });
+        } else {
+            setFormData({ ...formData, skills: [...currentSkills, skill] });
+        }
+    };
+
+    const AVAILABLE_SKILLS = [
+        'Plumber', 'Electrician', 'Cleaning', 'AC Repair', 
+        'Carpentry', 'Painting', 'Pest Control', 'Appliance Repair'
+    ];
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -133,11 +151,11 @@ const Register = () => {
                         </Link>
                         
                         <h1 className="text-5xl font-black text-white leading-tight mb-8">
-                            Start Your <br />
-                            <span className="text-primary-400 font-display">Journey.</span>
+                            Partner With <br />
+                            <span className="text-primary-400 font-display">Servicio.</span>
                         </h1>
                         <p className="text-slate-400 text-lg font-medium leading-relaxed max-w-sm">
-                            Join the world's most exclusive service community today. Experience excellence without limits.
+                            Join our network of elite professionals. Earn more and work on your own terms.
                         </p>
                     </div>
 
@@ -159,10 +177,9 @@ const Register = () => {
                     <div className="max-w-2xl mx-auto w-full">
                         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
                             <div>
-                                <h2 className="text-3xl font-black text-slate-900 tracking-tight mb-2">Create Account</h2>
-                                <p className="text-slate-500 font-bold">Begin your premium membership.</p>
+                                <h2 className="text-3xl font-black text-slate-900 tracking-tight mb-2">Become a Partner</h2>
+                                <p className="text-slate-500 font-bold">Register to provide premium services.</p>
                             </div>
-
                         </div>
 
                         {error && (
@@ -212,6 +229,42 @@ const Register = () => {
                                 </motion.div>
                             </div>
 
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <motion.div variants={itemVariants} className="space-y-2 md:col-span-2 group">
+                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 transition-colors group-focus-within:text-amber-500">Address</label>
+                                            <input type="text" name="address" value={formData.address} onChange={handleChange} required className="w-full px-5 py-4 bg-slate-50/50 rounded-xl outline-none focus:bg-white focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 focus:scale-[1.02] border border-slate-200 hover:border-slate-300 transition-all font-bold text-slate-900 shadow-sm" placeholder="123 Main Street" />
+                                        </motion.div>
+                                        <motion.div variants={itemVariants} className="space-y-2 group">
+                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 transition-colors group-focus-within:text-amber-500">State</label>
+                                            <input type="text" name="state" value={formData.state} onChange={handleChange} required className="w-full px-5 py-4 bg-slate-50/50 rounded-xl outline-none focus:bg-white focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 focus:scale-[1.02] border border-slate-200 hover:border-slate-300 transition-all font-bold text-slate-900 shadow-sm" placeholder="Maharashtra" />
+                                        </motion.div>
+                                        <motion.div variants={itemVariants} className="space-y-2 group">
+                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 transition-colors group-focus-within:text-amber-500">District / City</label>
+                                            <input type="text" name="district" value={formData.district} onChange={handleChange} required className="w-full px-5 py-4 bg-slate-50/50 rounded-xl outline-none focus:bg-white focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 focus:scale-[1.02] border border-slate-200 hover:border-slate-300 transition-all font-bold text-slate-900 shadow-sm" placeholder="Mumbai" />
+                                        </motion.div>
+                                        <motion.div variants={itemVariants} className="space-y-3 md:col-span-2 pt-2">
+                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Skills / Services Offered</label>
+                                            <div className="flex flex-wrap gap-2">
+                                                {AVAILABLE_SKILLS.map(skill => (
+                                                    <motion.button
+                                                        whileHover={{ scale: 1.05 }}
+                                                        whileTap={{ scale: 0.95 }}
+                                                        key={skill}
+                                                        type="button"
+                                                        onClick={() => handleSkillToggle(skill)}
+                                                        className={`px-4 py-2 rounded-xl text-xs font-black transition-all ${
+                                                            (formData.skills || []).includes(skill)
+                                                            ? 'bg-amber-100 text-amber-700 border-2 border-amber-500 shadow-sm'
+                                                            : 'bg-slate-50/80 text-slate-500 border-2 border-slate-200 hover:border-slate-300'
+                                                        }`}
+                                                    >
+                                                        {skill}
+                                                    </motion.button>
+                                                ))}
+                                            </div>
+                                        </motion.div>
+                            </div>
+
                             <motion.div variants={itemVariants} className="flex items-center gap-8 py-4 px-2">
                                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Gender</span>
                                 <div className="flex gap-8">
@@ -237,7 +290,7 @@ const Register = () => {
                             >
                                 {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : (
                                     <>
-                                        <span>Create Account Now</span>
+                                        <span>Create Partner Account</span>
                                         <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                                     </>
                                 )}
@@ -254,8 +307,8 @@ const Register = () => {
                             </Link>
 
                             <div className="mt-8 pt-6 border-t border-slate-100 flex justify-center">
-                                <Link to="/partner" className="text-xs font-black text-slate-400 uppercase tracking-widest hover:text-primary-600 transition-colors">
-                                    Are you a professional? Partner with us
+                                <Link to="/register" className="text-xs font-black text-slate-400 uppercase tracking-widest hover:text-primary-600 transition-colors">
+                                    Not a professional? Create a user account
                                 </Link>
                             </div>
                         </div>
@@ -266,4 +319,4 @@ const Register = () => {
     );
 };
 
-export default Register;
+export default ProviderRegister;

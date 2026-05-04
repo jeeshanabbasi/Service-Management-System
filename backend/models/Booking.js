@@ -13,8 +13,7 @@ const bookingSchema = new mongoose.Schema({
     },
     provider: {
         type: mongoose.Schema.ObjectId,
-        ref: 'User',
-        required: true
+        ref: 'User'
     },
     date: {
         type: Date,
@@ -28,6 +27,11 @@ const bookingSchema = new mongoose.Schema({
         type: String,
         enum: ['pending', 'confirmed', 'completed', 'cancelled'],
         default: 'pending'
+    },
+    providerStatus: {
+        type: String,
+        enum: ['None', 'Pending', 'Accepted', 'Rejected'],
+        default: 'None'
     },
     address: {
         street: { type: String, required: true },

@@ -12,7 +12,7 @@ const generateToken = (id) => {
 // @access  Public
 const registerUser = async (req, res, next) => {
     try {
-        const { firstName, lastName, email, password, role, phone, gender } = req.body;
+        const { firstName, lastName, email, password, role, phone, gender, address, state, district, skills } = req.body;
 
         if (!firstName || !lastName || !email || !password) {
             res.status(400);
@@ -34,7 +34,11 @@ const registerUser = async (req, res, next) => {
             password,
             role: role || 'user',
             phone,
-            gender
+            gender,
+            address,
+            state,
+            district,
+            skills
         });
 
         if (user) {
@@ -47,6 +51,10 @@ const registerUser = async (req, res, next) => {
                 role: user.role,
                 phone: user.phone,
                 gender: user.gender,
+                address: user.address,
+                state: user.state,
+                district: user.district,
+                skills: user.skills,
                 token: generateToken(user._id),
             });
         } else {

@@ -8,6 +8,8 @@ import ServicesList from './pages/ServicesList';
 import ServiceDetail from './pages/ServiceDetail';
 import Dashboard from './pages/Dashboard';
 import AdminDashboard from './pages/AdminDashboard';
+import ProviderDashboard from './pages/ProviderDashboard';
+import ProviderRegister from './pages/ProviderRegister';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import { AuthProvider } from './context/AuthContext';
@@ -31,6 +33,8 @@ const AnimatedRoutes = () => {
         <Route path="/services/:id" element={<PageWrapper><ServiceDetail /></PageWrapper>} />
         <Route path="/dashboard" element={<PageWrapper><Dashboard /></PageWrapper>} />
         <Route path="/admin" element={<PageWrapper><AdminDashboard /></PageWrapper>} />
+        <Route path="/provider-dashboard" element={<PageWrapper><ProviderDashboard /></PageWrapper>} />
+        <Route path="/partner" element={<PageWrapper><ProviderRegister /></PageWrapper>} />
         <Route path="/cart" element={<PageWrapper><Cart /></PageWrapper>} />
         <Route path="/checkout" element={<PageWrapper><Checkout /></PageWrapper>} />
       </Routes>

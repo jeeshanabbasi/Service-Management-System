@@ -39,7 +39,24 @@ const userSchema = new mongoose.Schema({
         type: String,
         enum: ['user', 'provider', 'admin'],
         default: 'user'
-    }
+    },
+    // Provider specific fields
+    isAvailable: {
+        type: Boolean,
+        default: true
+    },
+    address: {
+        type: String
+    },
+    state: {
+        type: String
+    },
+    district: {
+        type: String
+    },
+    skills: [{
+        type: String
+    }]
 }, {
     timestamps: true
 });
@@ -47,7 +64,7 @@ const userSchema = new mongoose.Schema({
 // Encrypt password using bcrypt
 userSchema.pre('save', async function(next) {
     if (!this.isModified('password')) {
-        next();
+        return next();
     }
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);

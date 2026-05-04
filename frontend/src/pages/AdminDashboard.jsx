@@ -33,6 +33,20 @@ const AdminDashboard = () => {
         image: ''
     });
 
+    // Provider States
+    const [isAddingProvider, setIsAddingProvider] = useState(false);
+    const [isEditingProvider, setIsEditingProvider] = useState(false);
+    const [providerLoading, setProviderLoading] = useState(false);
+    const [currentProvider, setCurrentProvider] = useState({
+        firstName: '', lastName: '', email: '', password: '', confirmPassword: '',
+        phone: '', gender: 'Male', role: 'provider', address: '', state: '', district: '', skills: []
+    });
+
+    const AVAILABLE_SKILLS = [
+        'Plumber', 'Electrician', 'Cleaning', 'AC Repair', 
+        'Carpentry', 'Painting', 'Pest Control', 'Appliance Repair'
+    ];
+
     useEffect(() => {
         if (!user || user.role !== 'admin') {
             navigate('/');
@@ -72,6 +86,17 @@ const AdminDashboard = () => {
         }
     };
 
+    const handleProviderAssign = async (bookingId, providerId) => {
+        try {
+            const res = await axios.put(`/api/bookings/${bookingId}`, { providerId, status: 'confirmed' });
+            setBookings(bookings.map(b => b._id === bookingId ? res.data : b));
+            toast.success('Provider assigned successfully');
+        } catch (error) {
+            console.error('Assignment failed', error);
+            toast.error('Failed to assign provider');
+        }
+    };
+
     const handleAddService = async (e) => {
         e.preventDefault();
         try {
@@ -87,6 +112,61 @@ const AdminDashboard = () => {
         } finally {
             setAddServiceLoading(false);
         }
+    };
+
+    const handleProviderChange = (e) => setCurrentProvider({ ...currentProvider, [e.target.name]: e.target.value });
+    
+    const handleProviderSkillToggle = (skill) => {
+        const currentSkills = currentProvider.skills || [];
+        if (currentSkills.includes(skill)) {
+            setCurrentProvider({ ...currentProvider, skills: currentSkills.filter(s => s !== skill) });
+        } else {
+            setCurrentProvider({ ...currentProvider, skills: [...currentSkills, skill] });
+        }
+    };
+
+    const handleAddProvider = async (e) => {
+        e.preventDefault();
+        if (currentProvider.password !== currentProvider.confirmPassword) {
+            return toast.error('Passwords do not match');
+        }
+        try {
+            setProviderLoading(true);
+            const res = await axios.post('/api/auth/register', currentProvider);
+            setUsers([...users, res.data]);
+            toast.success('Provider added successfully');
+            setIsAddingProvider(false);
+        } catch (error) {
+            toast.error(error.response?.data?.message || 'Failed to add provider');
+        } finally {
+            setProviderLoading(false);
+        }
+    };
+
+    const handleEditProvider = async (e) => {
+        e.preventDefault();
+        try {
+            setProviderLoading(true);
+            const res = await axios.put(`/api/users/${currentProvider._id}`, currentProvider);
+            setUsers(users.map(u => u._id === currentProvider._id ? res.data : u));
+            toast.success('Provider updated successfully');
+            setIsEditingProvider(false);
+        } catch (error) {
+            toast.error(error.response?.data?.message || 'Failed to update provider');
+        } finally {
+            setProviderLoading(false);
+        }
+    };
+
+    const openEditProvider = (provider) => {
+        const [firstName, ...lastNameArr] = (provider.name || '').split(' ');
+        setCurrentProvider({
+            ...provider,
+            firstName: provider.firstName || firstName,
+            lastName: provider.lastName || lastNameArr.join(' '),
+            skills: provider.skills || []
+        });
+        setIsEditingProvider(true);
     };
 
     // Derived Metrics
@@ -282,20 +362,68 @@ const AdminDashboard = () => {
                         )}
 
                         {activeTab === 'employees' && (
-                            <DataTable 
-                                title="Employee / Provider Directory" 
-                                description="Manage service providers."
-                                columns={['Name', 'Email', 'Phone', 'Joined Date']}
-                                data={providers}
-                                renderRow={(user) => (
-                                    <>
-                                        <td className="p-4 font-bold text-slate-900">{user.name || `${user.firstName} ${user.lastName}`}</td>
-                                        <td className="p-4 text-sm text-slate-600">{user.email}</td>
-                                        <td className="p-4 text-sm text-slate-500">{user.phone || 'N/A'}</td>
-                                        <td className="p-4 text-sm text-slate-500">{new Date(user.createdAt).toLocaleDateString()}</td>
-                                    </>
-                                )}
-                            />
+                            <div className="space-y-6">
+                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                    <div>
+                                        <h3 className="text-3xl font-black text-slate-900 tracking-tight mb-2">Employee / Provider Directory</h3>
+                                        <p className="text-slate-500 font-medium">Manage service providers.</p>
+                                    </div>
+                                    <button 
+                                        onClick={() => {
+                                            setCurrentProvider({
+                                                firstName: '', lastName: '', email: '', password: '', confirmPassword: '',
+                                                phone: '', gender: 'Male', role: 'provider', address: '', state: '', district: '', skills: []
+                                            });
+                                            setIsAddingProvider(true);
+                                        }}
+                                        className="px-6 py-3 bg-slate-900 text-white rounded-xl font-black shadow-[0_8px_30px_rgba(0,0,0,0.12)] hover:bg-amber-600 transition-colors flex items-center gap-2 text-sm"
+                                    >
+                                        <Plus className="w-5 h-5" /> Add Provider
+                                    </button>
+                                </div>
+                                <div className="bg-white rounded-[2rem] p-2 md:p-8 border border-stone-200 shadow-[0_8px_30px_rgba(0,0,0,0.04)]">
+                                    <div className="overflow-x-auto">
+                                        <table className="w-full text-left border-collapse min-w-[800px]">
+                                            <thead>
+                                                <tr>
+                                                    {['Name', 'Email', 'Phone', 'Status', 'Joined Date', 'Actions'].map(col => (
+                                                        <th key={col} className="p-4 text-[10px] font-black uppercase tracking-widest text-slate-400 border-b border-stone-100">{col}</th>
+                                                    ))}
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {providers.length === 0 ? (
+                                                    <tr>
+                                                        <td colSpan="6" className="p-8 text-center text-slate-500 font-medium">No providers found.</td>
+                                                    </tr>
+                                                ) : (
+                                                    providers.map(user => (
+                                                        <tr key={user._id} className="border-b border-stone-50 hover:bg-slate-50/50 transition-colors group">
+                                                            <td className="p-4 font-bold text-slate-900">{user.name || `${user.firstName} ${user.lastName}`}</td>
+                                                            <td className="p-4 text-sm text-slate-600">{user.email}</td>
+                                                            <td className="p-4 text-sm text-slate-500">{user.phone || 'N/A'}</td>
+                                                            <td className="p-4">
+                                                                <span className={`px-2 py-1 rounded text-[10px] font-black uppercase tracking-widest ${user.isAvailable !== false ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                                                                    {user.isAvailable !== false ? 'Online' : 'Offline'}
+                                                                </span>
+                                                            </td>
+                                                            <td className="p-4 text-sm text-slate-500">{new Date(user.createdAt).toLocaleDateString()}</td>
+                                                            <td className="p-4">
+                                                                <button 
+                                                                    onClick={() => openEditProvider(user)}
+                                                                    className="px-3 py-1.5 bg-amber-100 text-amber-700 rounded-lg text-xs font-bold hover:bg-amber-200 transition-colors"
+                                                                >
+                                                                    Edit
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    ))
+                                                )}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
                         )}
 
                         {activeTab === 'services' && (
@@ -350,7 +478,7 @@ const AdminDashboard = () => {
                             <DataTable 
                                 title="All Bookings" 
                                 description="Comprehensive view of all platform bookings. Manage statuses easily."
-                                columns={['ID', 'Customer', 'Service', 'Date/Time', 'Amount', 'Status Update']}
+                                columns={['ID', 'Customer', 'Service', 'Date/Time', 'Amount', 'Status / Assign']}
                                 data={bookings}
                                 renderRow={(booking) => (
                                     <>
@@ -361,9 +489,20 @@ const AdminDashboard = () => {
                                             {new Date(booking.date).toLocaleDateString()} <br/>
                                             <span className="text-[10px] font-bold text-slate-400">{booking.timeSlot}</span>
                                         </td>
-                                        <td className="p-4 font-black text-slate-900">₹{booking.totalAmount || booking.service?.price || '0'}</td>
                                         <td className="p-4">
-                                            <div className="relative inline-block group">
+                                            <p className="font-black text-slate-900">₹{booking.totalAmount || booking.service?.price || '0'}</p>
+                                            {booking.providerStatus && booking.providerStatus !== 'None' && (
+                                                <span className={`inline-block mt-1 px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-widest ${
+                                                    booking.providerStatus === 'Pending' ? 'bg-amber-100 text-amber-700' :
+                                                    booking.providerStatus === 'Rejected' ? 'bg-red-100 text-red-700' :
+                                                    'bg-green-100 text-green-700'
+                                                }`}>
+                                                    Provider: {booking.providerStatus}
+                                                </span>
+                                            )}
+                                        </td>
+                                        <td className="p-4">
+                                            <div className="relative inline-block group w-full mb-2">
                                                 <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border focus-within:ring-2 focus-within:ring-amber-500/20 transition-all ${
                                                     booking.status.toLowerCase() === 'completed' ? 'bg-green-50 border-green-200 text-green-700' :
                                                     booking.status.toLowerCase() === 'cancelled' ? 'bg-red-50 border-red-200 text-red-700' :
@@ -378,7 +517,7 @@ const AdminDashboard = () => {
                                                     <select 
                                                         value={booking.status.toLowerCase()}
                                                         onChange={(e) => handleStatusUpdate(booking._id, e.target.value)}
-                                                        className="bg-transparent border-none font-black text-[10px] uppercase tracking-widest outline-none cursor-pointer appearance-none pr-4"
+                                                        className="bg-transparent border-none font-black text-[10px] uppercase tracking-widest outline-none cursor-pointer appearance-none pr-4 w-full"
                                                     >
                                                         <option value="pending">Pending</option>
                                                         <option value="confirmed">Confirmed</option>
@@ -387,6 +526,20 @@ const AdminDashboard = () => {
                                                     </select>
                                                 </div>
                                             </div>
+                                            {booking.status.toLowerCase() !== 'completed' && booking.status.toLowerCase() !== 'cancelled' && (
+                                                <select
+                                                    value={booking.provider?._id || booking.provider || ''}
+                                                    onChange={(e) => handleProviderAssign(booking._id, e.target.value)}
+                                                    className="w-full bg-stone-50 border border-stone-200 text-[10px] font-bold text-slate-700 rounded-lg p-2 outline-none focus:border-amber-500 transition-colors"
+                                                >
+                                                    <option value="">Unassigned (Select Provider)</option>
+                                                    {providers.map(p => (
+                                                        <option key={p._id} value={p._id} className={p.isAvailable === false ? 'text-red-500 font-bold' : ''}>
+                                                            {p.name || p.firstName} {p.isAvailable === false ? '(Unavailable/Off)' : ''}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                            )}
                                         </td>
                                     </>
                                 )}
@@ -519,6 +672,97 @@ const DataTable = ({ title, description, columns, data, renderRow }) => (
                 </table>
             </div>
         </div>
+
+        {/* Provider Modal (Add / Edit) */}
+        <AnimatePresence>
+            {(isAddingProvider || isEditingProvider) && (
+                <motion.div 
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto"
+                >
+                    <motion.div 
+                        initial={{ scale: 0.95, opacity: 0, y: 20 }}
+                        animate={{ scale: 1, opacity: 1, y: 0 }}
+                        exit={{ scale: 0.95, opacity: 0, y: 20 }}
+                        className="bg-white w-full max-w-2xl rounded-3xl p-8 shadow-2xl my-8 relative"
+                    >
+                        <button 
+                            onClick={() => { setIsAddingProvider(false); setIsEditingProvider(false); }}
+                            className="absolute top-6 right-6 text-slate-400 hover:text-slate-600 transition-colors"
+                        >
+                            <XCircle className="w-6 h-6" />
+                        </button>
+                        
+                        <h3 className="text-2xl font-black text-slate-900 mb-6">
+                            {isEditingProvider ? 'Edit Provider Details' : 'Add New Provider'}
+                        </h3>
+                        
+                        <form onSubmit={isEditingProvider ? handleEditProvider : handleAddProvider} className="space-y-6">
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">First Name</label>
+                                    <input type="text" name="firstName" value={currentProvider.firstName} onChange={handleProviderChange} required className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-900 focus:bg-white focus:border-amber-500 outline-none transition-all" />
+                                </div>
+                                <div>
+                                    <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Last Name</label>
+                                    <input type="text" name="lastName" value={currentProvider.lastName} onChange={handleProviderChange} required className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-900 focus:bg-white focus:border-amber-500 outline-none transition-all" />
+                                </div>
+                                <div className="col-span-2">
+                                    <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Email Address</label>
+                                    <input type="email" name="email" value={currentProvider.email} onChange={handleProviderChange} required disabled={isEditingProvider} className={`w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-900 focus:bg-white focus:border-amber-500 outline-none transition-all ${isEditingProvider ? 'opacity-60 cursor-not-allowed' : ''}`} />
+                                </div>
+                                <div>
+                                    <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Phone</label>
+                                    <input type="text" name="phone" value={currentProvider.phone} onChange={handleProviderChange} required className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-900 focus:bg-white focus:border-amber-500 outline-none transition-all" />
+                                </div>
+                                {!isEditingProvider && (
+                                    <>
+                                        <div>
+                                            <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Password</label>
+                                            <input type="password" name="password" value={currentProvider.password} onChange={handleProviderChange} required className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-900 focus:bg-white focus:border-amber-500 outline-none transition-all" />
+                                        </div>
+                                        <div>
+                                            <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Confirm Password</label>
+                                            <input type="password" name="confirmPassword" value={currentProvider.confirmPassword} onChange={handleProviderChange} required className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-900 focus:bg-white focus:border-amber-500 outline-none transition-all" />
+                                        </div>
+                                    </>
+                                )}
+                            </div>
+                            
+                            <div className="border-t border-slate-100 pt-4">
+                                <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3">Skills / Services Offered</label>
+                                <div className="flex flex-wrap gap-2">
+                                    {AVAILABLE_SKILLS.map(skill => (
+                                        <button
+                                            key={skill}
+                                            type="button"
+                                            onClick={() => handleProviderSkillToggle(skill)}
+                                            className={`px-3 py-1.5 rounded-lg text-xs font-black transition-all ${
+                                                (currentProvider.skills || []).includes(skill)
+                                                ? 'bg-amber-100 text-amber-700 border border-amber-300'
+                                                : 'bg-slate-50 text-slate-500 border border-slate-200 hover:border-slate-300'
+                                            }`}
+                                        >
+                                            {skill}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                            
+                            <button 
+                                type="submit" 
+                                disabled={providerLoading}
+                                className="w-full py-4 bg-amber-600 text-slate-900 rounded-xl font-black uppercase tracking-widest hover:bg-amber-500 transition-colors flex items-center justify-center gap-2"
+                            >
+                                {providerLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : (isEditingProvider ? 'Save Changes' : 'Add Provider')}
+                            </button>
+                        </form>
+                    </motion.div>
+                </motion.div>
+            )}
+        </AnimatePresence>
     </div>
 );
 

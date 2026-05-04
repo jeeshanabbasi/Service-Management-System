@@ -18,7 +18,6 @@ const createBooking = async (req, res, next) => {
         const booking = await Booking.create({
             user: req.user.id,
             service: serviceId,
-            provider: service.provider,
             date,
             timeSlot,
             address,
@@ -66,12 +65,29 @@ const updateBookingStatus = async (req, res, next) => {
         }
 
         // Only provider or admin can update status
-        if (booking.provider.toString() !== req.user.id && req.user.role !== 'admin') {
+        if (booking.provider && booking.provider.toString() !== req.user.id && req.user.role !== 'admin') {
             res.status(401);
             throw new Error('Not authorized');
         }
 
-        booking.status = req.body.status || booking.status;
+        if (req.user.role === 'admin' && req.body.providerId) {
+            booking.provider = req.body.providerId;
+            booking.providerStatus = 'Pending'; // Reset to pending when a new provider is assigned
+        }
+
+        if (req.body.providerStatus) {
+            booking.providerStatus = req.body.providerStatus;
+            
+            // If provider accepts, auto-confirm booking
+            if (req.body.providerStatus === 'Accepted') {
+                booking.status = 'confirmed';
+            }
+        }
+
+        if (req.body.status) {
+            booking.status = req.body.status;
+        }
+
         await booking.save();
 
         res.status(200).json(booking);

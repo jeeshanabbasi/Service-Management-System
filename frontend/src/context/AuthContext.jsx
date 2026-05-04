@@ -10,7 +10,11 @@ export const AuthProvider = ({ children }) => {
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
         if (storedUser) {
-            setUser(JSON.parse(storedUser));
+            const parsedUser = JSON.parse(storedUser);
+            setUser(parsedUser);
+            if (parsedUser.token) {
+                axios.defaults.headers.common['Authorization'] = `Bearer ${parsedUser.token}`;
+            }
         }
         setLoading(false);
     }, []);
@@ -21,9 +25,10 @@ export const AuthProvider = ({ children }) => {
         setUser(res.data);
         // Update auth header
         axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.token}`;
+        return res.data;
     };
 
-    const register = async (firstName, lastName, email, password, role, phone, gender) => {
+    const register = async (firstName, lastName, email, password, role, phone, gender, address, state, district, skills) => {
         const res = await axios.post('/api/auth/register', { 
             firstName, 
             lastName, 
@@ -31,11 +36,13 @@ export const AuthProvider = ({ children }) => {
             password, 
             role, 
             phone, 
-            gender 
+            gender,
+            address,
+            state,
+            district,
+            skills
         });
-        localStorage.setItem('user', JSON.stringify(res.data));
-        setUser(res.data);
-        axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.token}`;
+        return res.data;
     };
 
     const logout = () => {

@@ -108,6 +108,11 @@ const Navbar = () => {
                                             Admin Panel
                                         </Link>
                                     )}
+                                    {user?.role === 'provider' && (
+                                        <Link to="/provider-dashboard" className="hidden lg:flex items-center gap-2 px-5 py-2.5 rounded-[1rem] border border-blue-500/30 bg-blue-500/10 text-blue-400 hover:bg-blue-600 hover:text-white transition-all font-black text-xs uppercase tracking-widest">
+                                            Provider Panel
+                                        </Link>
+                                    )}
                                     <Link to="/dashboard" className="flex items-center gap-3 px-5 py-2.5 rounded-[1rem] border border-stone-200 bg-white hover:border-amber-500/50 hover:text-amber-400 transition-all group shadow-sm">
                                         <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center border border-stone-200 shadow-sm group-hover:border-amber-500/50 transition-colors">
                                             <User className="w-4 h-4 text-slate-500 group-hover:text-amber-400 transition-colors" />
@@ -219,6 +224,15 @@ const Navbar = () => {
                                                 className="block w-full bg-amber-600 text-slate-900 py-5 rounded-[2rem] font-black text-center shadow-[0_10px_40px_-10px_rgba(245,158,11,0.2)]"
                                             >
                                                 Admin Dashboard
+                                            </Link>
+                                        )}
+                                        {user?.role === 'provider' && (
+                                            <Link 
+                                                to="/provider-dashboard"
+                                                onClick={() => setIsMenuOpen(false)}
+                                                className="block w-full bg-blue-600 text-white py-5 rounded-[2rem] font-black text-center shadow-[0_10px_40px_-10px_rgba(59,130,246,0.2)]"
+                                            >
+                                                Provider Dashboard
                                             </Link>
                                         )}
                                         <Link 
