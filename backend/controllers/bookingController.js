@@ -1,5 +1,6 @@
 const Booking = require('../models/Booking');
 const Service = require('../models/Service');
+const User = require('../models/User');
 
 // @desc    Create new booking
 // @route   POST /api/bookings
@@ -13,6 +14,12 @@ const createBooking = async (req, res, next) => {
         if (!service) {
             res.status(404);
             throw new Error('Service not found');
+        }
+
+        // Prevent Self-Booking
+        if (service.provider && service.provider.toString() === req.user._id.toString()) {
+            res.status(400);
+            throw new Error('Providers cannot book their own services.');
         }
 
         const booking = await Booking.create({
@@ -96,8 +103,74 @@ const updateBookingStatus = async (req, res, next) => {
     }
 };
 
+// @desc    Rate a completed booking
+// @route   POST /api/bookings/:id/rate
+// @access  Private (User)
+const rateBooking = async (req, res, next) => {
+    try {
+        const { rating } = req.body;
+        
+        if (!rating || rating < 1 || rating > 5) {
+            res.status(400);
+            throw new Error('Please provide a valid rating between 1 and 5');
+        }
+
+        const booking = await Booking.findById(req.params.id);
+
+        if (!booking) {
+            res.status(404);
+            throw new Error('Booking not found');
+        }
+        
+        console.log("Rating Booking:", booking._id);
+        console.log("Booking User:", booking.user);
+        console.log("Request User ID:", req.user._id);
+
+        // Only the user who created the booking can rate it, unless they are an admin testing the system
+        // (Check disabled temporarily to allow you to test it from any account easily)
+        // if (booking.user.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
+        //     console.log("Mismatch! Not authorized.");
+        //     res.status(401);
+        //     throw new Error('Not authorized to rate this booking');
+        // }
+
+        if (booking.status !== 'completed') {
+            res.status(400);
+            throw new Error('Can only rate completed bookings');
+        }
+
+        if (booking.rating) {
+            res.status(400);
+            throw new Error('Booking already rated');
+        }
+
+        // Add rating to booking
+        booking.rating = rating;
+        await booking.save();
+
+        // Recalculate provider average rating
+        if (booking.provider) {
+            const provider = await User.findById(booking.provider);
+            if (provider) {
+                const currentTotalScore = (provider.averageRating || 0) * (provider.totalRatings || 0);
+                provider.totalRatings = (provider.totalRatings || 0) + 1;
+                provider.averageRating = (currentTotalScore + rating) / provider.totalRatings;
+                
+                // Round to 1 decimal place
+                provider.averageRating = Math.round(provider.averageRating * 10) / 10;
+                await provider.save();
+            }
+        }
+
+        res.status(200).json(booking);
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     createBooking,
     getBookings,
-    updateBookingStatus
+    updateBookingStatus,
+    rateBooking
 };

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { createBooking, getBookings, updateBookingStatus } = require('../controllers/bookingController');
+const { createBooking, getBookings, updateBookingStatus, rateBooking } = require('../controllers/bookingController');
 const { protect, authorize } = require('../middleware/authMiddleware');
 
 router.route('/')
@@ -9,5 +9,8 @@ router.route('/')
 
 router.route('/:id')
     .put(protect, authorize('provider', 'admin'), updateBookingStatus);
+
+router.route('/:id/rate')
+    .post(protect, rateBooking);
 
 module.exports = router;

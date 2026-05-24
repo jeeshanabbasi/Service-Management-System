@@ -5,11 +5,13 @@ import { Star, MapPin, Clock, ArrowLeft, ShoppingBag, Check, ShieldCheck, Award 
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
 import { CartContext } from '../context/CartContext';
+import { AuthContext } from '../context/AuthContext';
 
 const ServiceDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const { cart, addToCart } = React.useContext(CartContext);
+    const { user } = React.useContext(AuthContext);
     const [service, setService] = useState(null);
     const [loading, setLoading] = useState(true);
 
@@ -34,6 +36,9 @@ const ServiceDetail = () => {
     };
 
     const isAdded = cart.some(item => item._id === service?._id);
+    const isOwnService = user && service?.provider && (
+        (typeof service.provider === 'string' ? service.provider : service.provider._id) === user._id
+    );
 
     if (loading) {
         return (
@@ -133,22 +138,30 @@ const ServiceDetail = () => {
                             </div>
 
                             <div className="flex flex-col sm:flex-row gap-4">
-                                <button 
-                                    className="flex-grow py-5 bg-amber-600 text-slate-900 rounded-[1.5rem] font-black text-sm uppercase tracking-widest shadow-[0_10px_40px_-10px_rgba(245,158,11,0.2)] hover:bg-amber-500 transition-colors"
-                                >
-                                    Book Now
-                                </button>
-                                
-                                <button 
-                                    onClick={handleAddToCart}
-                                    className={`py-5 px-8 rounded-[1.5rem] font-black text-sm uppercase tracking-widest border-2 transition-all flex items-center justify-center gap-2 ${
-                                        isAdded 
-                                        ? 'bg-green-500/20 border-green-500/50 text-green-400 shadow-[0_0_15px_rgba(34,197,94,0.3)]' 
-                                        : 'bg-white border-stone-200 text-amber-500 hover:border-amber-500 hover:text-slate-900 hover:shadow-[0_10px_40px_-10px_rgba(245,158,11,0.2)] hover:bg-amber-600/20'
-                                    }`}
-                                >
-                                    {isAdded ? <Check className="w-5 h-5" /> : <ShoppingBag className="w-5 h-5" />}
-                                </button>
+                                {isOwnService ? (
+                                    <div className="flex-grow py-5 bg-stone-100 text-slate-500 rounded-[1.5rem] font-black text-sm uppercase tracking-widest text-center border border-stone-200">
+                                        Your Own Service
+                                    </div>
+                                ) : (
+                                    <>
+                                        <button 
+                                            className="flex-grow py-5 bg-amber-600 text-slate-900 rounded-[1.5rem] font-black text-sm uppercase tracking-widest shadow-[0_10px_40px_-10px_rgba(245,158,11,0.2)] hover:bg-amber-500 transition-colors"
+                                        >
+                                            Book Now
+                                        </button>
+                                        
+                                        <button 
+                                            onClick={handleAddToCart}
+                                            className={`py-5 px-8 rounded-[1.5rem] font-black text-sm uppercase tracking-widest border-2 transition-all flex items-center justify-center gap-2 ${
+                                                isAdded 
+                                                ? 'bg-green-500/20 border-green-500/50 text-green-400 shadow-[0_0_15px_rgba(34,197,94,0.3)]' 
+                                                : 'bg-white border-stone-200 text-amber-500 hover:border-amber-500 hover:text-slate-900 hover:shadow-[0_10px_40px_-10px_rgba(245,158,11,0.2)] hover:bg-amber-600/20'
+                                            }`}
+                                        >
+                                            {isAdded ? <Check className="w-5 h-5" /> : <ShoppingBag className="w-5 h-5" />}
+                                        </button>
+                                    </>
+                                )}
                             </div>
                         </div>
                     </div>

@@ -53,7 +53,7 @@ const updateUser = async (req, res, next) => {
             throw new Error('User not found');
         }
 
-        const { firstName, lastName, phone, email, isAvailable, skills } = req.body;
+        const { firstName, lastName, phone, email, isAvailable, isBlocked, skills } = req.body;
 
         if (firstName) user.firstName = firstName;
         if (lastName) user.lastName = lastName;
@@ -61,6 +61,7 @@ const updateUser = async (req, res, next) => {
         if (phone) user.phone = phone;
         if (email) user.email = email;
         if (isAvailable !== undefined) user.isAvailable = isAvailable;
+        if (isBlocked !== undefined) user.isBlocked = isBlocked;
         if (skills) user.skills = skills;
 
         const updatedUser = await user.save();

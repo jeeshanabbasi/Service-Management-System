@@ -14,6 +14,8 @@ const Navbar = () => {
     const [scrolled, setScrolled] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+    const isAdminPage = location.pathname.startsWith('/admin');
+
     useEffect(() => {
         const handleScroll = () => {
             setScrolled(window.scrollY > 20);
@@ -42,122 +44,137 @@ const Navbar = () => {
     ];
 
     return (
-        <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 px-6 py-4`}>
-            <div className={`w-full px-4 md:px-8 transition-all duration-500 ${
-                scrolled ? 'translate-y-0' : 'translate-y-2'
-            }`}>
-                <div className={`bg-white/80 backdrop-blur-xl border border-stone-200 shadow-[0_8px_30px_rgba(0,0,0,0.04)] rounded-[2rem] px-8 py-4 flex justify-between items-center transition-all duration-500 ${
-                    scrolled ? 'shadow-[0_10px_40px_-10px_rgba(245,158,11,0.2)] border-stone-200' : 'shadow-none'
-                }`}>
-                    {/* Logo */}
+        <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 flex justify-center bg-gradient-to-r from-slate-900 to-[#0B1120] border-b border-slate-800/60 backdrop-blur-xl ${
+            scrolled ? 'shadow-xl shadow-slate-900/50' : ''
+        }`}>
+            <div className={`w-full max-w-[1600px] transition-all duration-500 px-8 py-5 flex justify-between items-center border-x border-slate-800/60`}>
+                {/* Logo */}
                     <Link to="/" className="group flex items-center gap-3 shrink-0">
-                        <div className="w-11 h-11 bg-amber-600 rounded-2xl flex items-center justify-center shadow-lg shadow-amber-500/30 group-hover:rotate-12 transition-all duration-500">
+                        <div className="w-11 h-11 bg-amber-500 rounded-2xl flex items-center justify-center shadow-lg shadow-amber-500/30 group-hover:rotate-12 transition-all duration-500">
                             <Sparkles className="text-slate-900 w-6 h-6" />
                         </div>
-                        <span className="text-2xl font-black tracking-tight text-slate-900">
+                        <span className={`text-2xl font-black tracking-tight text-white`}>
                             Servicio<span className="text-amber-500">.</span>
                         </span>
                     </Link>
 
                     {/* Desktop Menu */}
-                    <div className="hidden md:flex items-center gap-8 flex-grow justify-end">
-                        {/* Search Bar */}
-                        <div className="relative group max-w-xs w-full">
-                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 transition-colors text-slate-500 group-focus-within:text-amber-400" />
-                            <input 
-                                type="text" 
-                                placeholder="Find a service..." 
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                onKeyDown={handleSearch}
-                                className="w-full pl-11 pr-4 py-3 rounded-full text-sm font-bold transition-all outline-none border border-stone-200 bg-white focus:bg-[#20202e] focus:border-amber-500/30 focus:ring-4 focus:ring-amber-500/10 text-slate-900 placeholder:text-slate-500"
-                            />
-                        </div>
-
-                        {/* Navigation Links */}
-                        <div className="flex items-center gap-8 px-8 border-r border-stone-200">
-                            {navLinks.map((link) => (
-                                <Link
-                                    key={link.name}
-                                    to={link.path}
-                                    className={`px-5 py-2 rounded-[1rem] text-sm font-black transition-all ${
-                                        location.pathname === link.path ? 'bg-amber-600 text-slate-900 shadow-[0_10px_40px_-10px_rgba(245,158,11,0.2)]' : 'bg-transparent text-slate-700 hover:bg-white hover:text-slate-900'
-                                    }`}
-                                >
-                                    {link.name}
-                                </Link>
-                            ))}
-                        </div>
-
-                        {/* Auth Buttons */}
-                        <div className="flex items-center gap-4">
-                            {/* Cart Icon */}
-                            <Link to="/cart" className="relative p-2 text-slate-700 hover:text-amber-400 transition-colors">
-                                <ShoppingBag className="w-6 h-6" />
-                                {cart?.length > 0 && (
-                                    <span className="absolute top-0 right-0 w-5 h-5 bg-amber-500 text-slate-900 rounded-full text-[10px] font-black flex items-center justify-center border-2 border-[#0f0f13]">
-                                        {cart.length}
-                                    </span>
-                                )}
-                            </Link>
-
-                            {user ? (
-                                <div className="flex items-center gap-4">
-                                    {user?.role === 'admin' && (
-                                        <Link to="/admin" className="hidden lg:flex items-center gap-2 px-5 py-2.5 rounded-[1rem] border border-amber-500/30 bg-amber-500/10 text-amber-400 hover:bg-amber-600 hover:text-slate-900 transition-all font-black text-xs uppercase tracking-widest">
-                                            Admin Panel
-                                        </Link>
-                                    )}
-                                    {user?.role === 'provider' && (
-                                        <Link to="/provider-dashboard" className="hidden lg:flex items-center gap-2 px-5 py-2.5 rounded-[1rem] border border-blue-500/30 bg-blue-500/10 text-blue-400 hover:bg-blue-600 hover:text-white transition-all font-black text-xs uppercase tracking-widest">
-                                            Provider Panel
-                                        </Link>
-                                    )}
-                                    <Link to="/dashboard" className="flex items-center gap-3 px-5 py-2.5 rounded-[1rem] border border-stone-200 bg-white hover:border-amber-500/50 hover:text-amber-400 transition-all group shadow-sm">
-                                        <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center border border-stone-200 shadow-sm group-hover:border-amber-500/50 transition-colors">
-                                            <User className="w-4 h-4 text-slate-500 group-hover:text-amber-400 transition-colors" />
-                                        </div>
-                                        <span className="text-sm font-black text-slate-800 flex items-center gap-2">
-                                            {user?.name?.split(' ')[0] || user?.firstName || 'User'}
-                                            <span className="w-2.5 h-2.5 bg-green-500 rounded-full border border-[#0f0f13] shadow-sm" title="Online" />
-                                        </span>
-                                    </Link>
-                                    
-                                    <button
-                                        onClick={handleLogout}
-                                        className="p-3 rounded-2xl text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition-all"
-                                        title="Logout"
-                                    >
-                                        <LogOut className="w-5 h-5" />
-                                    </button>
-                                </div>
-                            ) : (
-                                <div className="flex items-center gap-2">
-                                    <Link 
-                                        to="/login" 
-                                        className="text-sm font-black text-slate-700 hover:text-amber-400 px-6 py-3 transition-colors"
-                                    >
-                                        Login
-                                    </Link>
-                                    <Link 
-                                        to="/register" 
-                                        className="relative overflow-hidden px-8 py-3 rounded-full font-black transition-all active:scale-95 shadow-[0_10px_40px_-10px_rgba(245,158,11,0.2)] bg-amber-600 text-slate-900 hover:bg-amber-500 flex items-center justify-center gap-2 text-xs"
-                                    >
-                                        Join Now
-                                    </Link>
+                    <div className="hidden md:flex items-center justify-between flex-grow ml-10">
+                        {/* Search Bar - Aligned to left/center */}
+                        <div className="flex-grow">
+                            {!isAdminPage && (
+                                <div className="relative group max-w-md w-full mr-6">
+                                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 transition-colors text-slate-400 group-focus-within:text-amber-500" />
+                                    <input 
+                                        type="text" 
+                                        placeholder="Find a service..." 
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        onKeyDown={handleSearch}
+                                        className="w-full pl-11 pr-4 py-2.5 rounded-full text-sm font-semibold transition-all outline-none border bg-slate-800/50 border-slate-700 text-white placeholder:text-slate-400 focus:bg-slate-800 focus:border-amber-500/50 focus:ring-4 focus:ring-amber-500/10"
+                                    />
                                 </div>
                             )}
+                        </div>
+
+                        {/* Right Section: Links & Auth */}
+                        <div className="flex items-center gap-6">
+                            {/* Navigation Links */}
+                            {!isAdminPage ? (
+                                <>
+                                    <div className="flex items-center gap-2 p-1 rounded-full border bg-slate-800/50 border-slate-700/50">
+                                        {navLinks.map((link) => (
+                                            <Link
+                                                key={link.name}
+                                                to={link.path}
+                                                className={`px-5 py-2 rounded-full text-sm font-bold transition-all ${
+                                                    location.pathname === link.path ? 'bg-amber-500 text-slate-900 shadow-md shadow-amber-500/20' : 'bg-transparent text-slate-300 hover:text-white hover:bg-slate-700/50'
+                                                }`}
+                                            >
+                                                {link.name}
+                                            </Link>
+                                        ))}
+                                    </div>
+                                    <div className="w-px h-8 hidden lg:block bg-slate-700"></div>
+                                </>
+                            ) : (
+                                <Link to="/" className="flex items-center gap-2 px-5 py-2.5 rounded-full border border-amber-500/30 bg-amber-500/10 text-amber-500 hover:bg-amber-500 hover:text-white transition-all font-bold text-sm shadow-[0_4px_12px_rgba(245,158,11,0.15)]">
+                                    <LogOut className="w-4 h-4 rotate-180" /> Go to App
+                                </Link>
+                            )}
+
+                            {/* Auth Buttons */}
+                            <div className="flex items-center gap-4">
+                                {/* Cart Icon */}
+                                {!isAdminPage && (
+                                    <Link to="/cart" className="relative p-2.5 transition-colors rounded-full border bg-slate-800/50 border-slate-700/50 text-slate-300 hover:text-amber-400 hover:bg-slate-700">
+                                        <ShoppingBag className="w-5 h-5" />
+                                        {cart?.length > 0 && (
+                                            <span className="absolute -top-1 -right-1 w-5 h-5 bg-amber-500 text-slate-900 rounded-full text-[10px] font-bold flex items-center justify-center border border-amber-600 shadow-sm">
+                                                {cart.length}
+                                            </span>
+                                        )}
+                                    </Link>
+                                )}
+
+                                {user ? (
+                                    <div className="flex items-center gap-3">
+                                        {user?.role === 'admin' && (
+                                            <Link to="/admin" className="hidden lg:flex items-center gap-2 px-4 py-2 rounded-full border border-amber-500/30 bg-amber-500/10 text-amber-500 hover:bg-amber-500 hover:text-slate-900 transition-all font-bold text-xs uppercase tracking-wider">
+                                                Admin Panel
+                                            </Link>
+                                        )}
+                                        {user?.role === 'provider' && (
+                                            <Link to="/provider-dashboard" className="hidden lg:flex items-center gap-2 px-4 py-2 rounded-full border border-blue-500/30 bg-blue-500/10 text-blue-400 hover:bg-blue-600 hover:text-white transition-all font-bold text-xs uppercase tracking-wider">
+                                                Provider Panel
+                                            </Link>
+                                        )}
+                                        <Link to="/dashboard" className={`flex items-center gap-2.5 px-4 py-2 rounded-full border transition-all group shadow-sm bg-slate-800/50 border-slate-700/50 hover:border-amber-500/50 hover:text-amber-400`}>
+                                            <div className={`w-7 h-7 rounded-full flex items-center justify-center transition-colors bg-slate-900 group-hover:bg-amber-500/10`}>
+                                                <User className={`w-4 h-4 transition-colors text-slate-400 group-hover:text-amber-500`} />
+                                            </div>
+                                            <span className={`text-sm font-bold flex items-center gap-2 text-slate-200`}>
+                                                {user?.name || `${user?.firstName || ''} ${user?.lastName || ''}`.trim() || 'User'}
+                                                <span className="w-2 h-2 bg-green-500 rounded-full shadow-sm" title="Online" />
+                                            </span>
+                                        </Link>
+                                        
+                                        <button
+                                            onClick={handleLogout}
+                                            className={`p-2.5 rounded-full transition-all border border-transparent text-slate-400 hover:text-red-400 hover:bg-red-500/10 hover:border-red-500/20`}
+
+                                            title="Logout"
+                                        >
+                                            <LogOut className="w-5 h-5" />
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <div className="flex items-center gap-3">
+                                        <Link 
+                                            to="/login" 
+                                            className="text-sm font-bold text-slate-600 hover:text-amber-500 px-2 transition-colors"
+                                        >
+                                            Login
+                                        </Link>
+                                        <Link 
+                                            to="/register" 
+                                            className="px-6 py-2.5 rounded-full font-bold transition-all active:scale-95 shadow-sm hover:shadow-md bg-amber-500 text-white hover:bg-amber-600 flex items-center justify-center text-sm"
+                                        >
+                                            Join Now
+                                        </Link>
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </div>
 
                     {/* Mobile Menu Toggle */}
                     <button 
-                        className="md:hidden p-3 bg-white rounded-2xl text-slate-900 transition-all active:scale-90 border border-stone-200"
+                        className="md:hidden p-3 bg-slate-800/50 rounded-2xl text-slate-300 transition-all active:scale-90 border border-slate-700"
                         onClick={() => setIsMenuOpen(!isMenuOpen)}
                     >
                         {isMenuOpen ? <X /> : <Menu />}
                     </button>
-                </div>
             </div>
 
             {/* Mobile Navigation Drawer */}
@@ -176,15 +193,15 @@ const Navbar = () => {
                             animate={{ x: 0 }}
                             exit={{ x: '100%' }}
                             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                            className="fixed top-0 right-0 bottom-0 w-4/5 max-w-sm bg-white shadow-2xl z-50 p-8 md:hidden flex flex-col border-l border-stone-200"
+                            className="fixed top-0 right-0 bottom-0 w-4/5 max-w-sm bg-gradient-to-b from-slate-900 to-[#0B1120] shadow-2xl z-50 p-8 md:hidden flex flex-col border-l border-slate-800/60"
                         >
                             <div className="flex justify-between items-center mb-12">
-                                <span className="text-2xl font-black tracking-tight text-slate-900">
+                                <span className="text-2xl font-black tracking-tight text-white">
                                     Servicio<span className="text-amber-500">.</span>
                                 </span>
                                 <button 
                                     onClick={() => setIsMenuOpen(false)}
-                                    className="p-2 bg-white rounded-xl text-slate-500 hover:text-slate-900"
+                                    className="p-2 bg-slate-800/50 rounded-xl text-slate-400 hover:text-white"
                                 >
                                     <X />
                                 </button>
@@ -197,23 +214,23 @@ const Navbar = () => {
                                         to={link.path}
                                         onClick={() => setIsMenuOpen(false)}
                                         className={`text-2xl font-black ${
-                                            location.pathname === link.path ? 'text-amber-400' : 'text-slate-700 hover:text-slate-900'
+                                            location.pathname === link.path ? 'text-amber-400' : 'text-slate-300 hover:text-white'
                                         } transition-colors`}
                                     >
                                         {link.name}
                                     </Link>
                                 ))}
                                 
-                                <hr className="border-stone-200 my-4" />
+                                <hr className="border-slate-800/60 my-4" />
                                 
                                 {user ? (
                                     <div className="space-y-6">
-                                        <div className="flex items-center gap-4 p-4 rounded-[2rem] bg-white border border-stone-200">
-                                            <div className="w-14 h-14 bg-[#faf9f6] rounded-2xl flex items-center justify-center shadow-inner">
+                                        <div className="flex items-center gap-4 p-4 rounded-[2rem] bg-slate-800/50 border border-slate-700/50">
+                                            <div className="w-14 h-14 bg-slate-900 rounded-2xl flex items-center justify-center shadow-inner">
                                                 <User className="w-6 h-6 text-amber-500" />
                                             </div>
                                             <div>
-                                                <p className="font-black text-slate-900 text-lg leading-tight">{user?.name || user?.firstName || 'User'}</p>
+                                                <p className="font-black text-white text-lg leading-tight">{user?.name || user?.firstName || 'User'}</p>
                                                 <p className="text-sm font-bold text-green-400">Active Account</p>
                                             </div>
                                         </div>

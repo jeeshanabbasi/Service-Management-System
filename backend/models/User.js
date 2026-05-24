@@ -45,6 +45,10 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: true
     },
+    isBlocked: {
+        type: Boolean,
+        default: false
+    },
     address: {
         type: String
     },
@@ -56,7 +60,15 @@ const userSchema = new mongoose.Schema({
     },
     skills: [{
         type: String
-    }]
+    }],
+    averageRating: {
+        type: Number,
+        default: 0
+    },
+    totalRatings: {
+        type: Number,
+        default: 0
+    }
 }, {
     timestamps: true
 });
