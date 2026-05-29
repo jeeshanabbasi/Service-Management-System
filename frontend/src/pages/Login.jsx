@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
-import { Rocket, Loader2, Sparkles, Shield, ChevronLeft, ArrowRight } from 'lucide-react';
+import { Rocket, Loader2, Sparkles, Shield, ChevronLeft, ArrowRight, Lock, Zap } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const backgroundImages = [
@@ -61,167 +61,194 @@ const Login = () => {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6 relative overflow-hidden">
-            {/* Ambient Background */}
-            <div className="absolute top-0 left-0 w-full h-full -z-10">
-                <div className="absolute top-[-10%] right-[-10%] w-[60%] h-[60%] bg-primary-100/40 rounded-full blur-[140px] animate-pulse" />
-                <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-100/30 rounded-full blur-[120px]" />
-            </div>
-
-            <Link 
-                to="/" 
-                className="absolute top-10 left-10 hidden md:flex items-center gap-2 text-slate-400 hover:text-primary-600 transition-colors font-black text-xs uppercase tracking-widest"
-            >
-                <ChevronLeft className="w-4 h-4" /> Back to Home
-            </Link>
-
-            <motion.div 
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5, ease: "easeOut" }}
-                className="max-w-5xl w-full grid grid-cols-1 lg:grid-cols-2 bg-white/90 backdrop-blur-2xl rounded-[3rem] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] overflow-hidden border border-white/50"
-            >
-                {/* Visual Side */}
-                <div className="hidden lg:flex flex-col justify-between p-16 relative overflow-hidden">
-                    {/* Background Image Slideshow */}
-                    <div className="absolute inset-0 z-0">
-                        <AnimatePresence>
-                            <motion.img 
-                                key={currentImage}
-                                src={backgroundImages[currentImage]}
-                                initial={{ opacity: 0, scale: 1.05 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                exit={{ opacity: 0 }}
-                                transition={{ duration: 1 }}
-                                alt="Premium Service" 
-                                className="absolute inset-0 w-full h-full object-cover"
-                            />
-                        </AnimatePresence>
-                        <div className="absolute inset-0 bg-slate-900/50"></div>
-                        <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent"></div>
-                    </div>
-                    
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/20 rounded-full blur-3xl opacity-50 z-0" />
-                    
-                    <div className="relative z-10">
-                        <Link to="/" className="flex items-center gap-3 mb-16">
-                            <div className="w-10 h-10 bg-primary-600 rounded-xl flex items-center justify-center shadow-lg shadow-primary-500/20">
-                                <Sparkles className="text-white w-5 h-5" />
-                            </div>
-                            <span className="text-2xl font-black tracking-tight text-white">Servicio.</span>
-                        </Link>
-                        
-                        <h1 className="text-5xl font-black text-white leading-tight mb-8">
-                            Welcome <br />
-                            To The <span className="text-primary-400">Elite.</span>
-                        </h1>
-                        <p className="text-slate-400 text-lg font-medium leading-relaxed max-w-sm">
-                            Join over 50,000 premium members experiencing the future of home services.
-                        </p>
-                    </div>
-
-                    <div className="relative z-10 grid grid-cols-2 gap-8 pt-16 border-t border-white/10">
-                        <div>
-                            <p className="text-white font-black text-2xl mb-1">99.9%</p>
-                            <p className="text-xs font-black uppercase tracking-widest text-slate-500">Satisfaction</p>
-                        </div>
-                        <div>
-                            <p className="text-white font-black text-2xl mb-1">24/7</p>
-                            <p className="text-xs font-black uppercase tracking-widest text-slate-500">Concierge</p>
-                        </div>
-                    </div>
+        <div className="min-h-screen bg-[#151515] flex flex-col relative overflow-hidden selection:bg-amber-500/30 selection:text-amber-200">
+            {/* Top Navigation */}
+            <header className="w-full px-8 py-6 flex justify-between items-center z-20">
+                <Link to="/" className="flex items-center gap-3 text-amber-500 hover:text-amber-400 font-bold uppercase tracking-[0.2em] text-[10px] transition-colors">
+                    <ChevronLeft className="w-4 h-4" /> Back to Home
+                </Link>
+                <div className="text-lg font-black text-white tracking-tight">
+                    Servicio<span className="text-amber-500">.</span>
                 </div>
+            </header>
 
-                {/* Form Side */}
-                <div className="p-12 md:p-20 flex flex-col justify-center">
-                    <div className="max-w-md mx-auto w-full">
-                        <div className="mb-12">
-                            <h2 className="text-4xl font-black text-slate-900 tracking-tight mb-3">Sign In</h2>
-                            <p className="text-slate-500 font-bold">Secure access to your luxury dashboard.</p>
+            <div className="flex-1 flex items-center justify-center p-6 z-10 w-full max-w-[1000px] mx-auto mt-2 lg:mt-0 mb-8">
+                <motion.div 
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.5, ease: "easeOut" }}
+                    className="w-full grid grid-cols-1 lg:grid-cols-2 bg-[#1c1c1c] rounded-2xl shadow-2xl overflow-hidden border border-white/5"
+                >
+                    {/* Visual Side */}
+                    <div className="hidden lg:flex flex-col justify-between p-12 relative overflow-hidden min-h-[600px] border-r border-white/5">
+                        <div className="absolute inset-0 z-0">
+                            <AnimatePresence>
+                                <motion.img 
+                                    key={currentImage}
+                                    src={backgroundImages[currentImage]}
+                                    initial={{ opacity: 0, scale: 1.05 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    transition={{ duration: 1 }}
+                                    alt="Premium Service" 
+                                    className="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-luminosity"
+                                />
+                            </AnimatePresence>
+                            <div className="absolute inset-0 bg-gradient-to-t from-[#151515] via-[#1c1c1c]/80 to-transparent"></div>
+                        </div>
+                        
+                        <div className="relative z-10">
+                            <div className="flex items-center gap-4 mb-12">
+                                <div className="w-16 h-16 bg-black rounded-full flex items-center justify-center border-2 border-[#f3a953]/40 overflow-hidden shadow-[0_0_20px_rgba(243,169,83,0.15)]">
+                                    <img src="/logo.png" alt="Servicio Logo" className="w-full h-full object-cover scale-110" />
+                                </div>
+                                <span className="text-2xl font-bold tracking-tight text-white">Servicio.</span>
+                            </div>
+                            
+                            <h1 className="text-xl font-medium text-white leading-relaxed mb-6">
+                                Welcome <br />
+                                To The <span className="text-[#f3a953]">Elite.</span>
+                            </h1>
+                            <p className="text-slate-400 text-xs font-medium leading-relaxed max-w-xs">
+                                Join over 50,000 premium members experiencing the future of home services.
+                            </p>
                         </div>
 
-                        {error && (
-                            <motion.div 
-                                initial={{ opacity: 0, y: -10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                className="bg-red-50 text-red-600 p-5 rounded-2xl mb-8 text-sm font-black border border-red-100 flex items-center gap-3"
+                        <div className="relative z-10 grid grid-cols-2 gap-8 pt-10 border-t border-white/5 mt-20">
+                            <div>
+                                <p className="text-[#f3a953] font-medium text-3xl mb-1 tracking-tight">99.9%</p>
+                                <p className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-300">Satisfaction</p>
+                            </div>
+                            <div>
+                                <p className="text-white font-medium text-3xl mb-1 tracking-tight">24/7</p>
+                                <p className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-300">Concierge</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Form Side */}
+                    <div className="p-10 md:p-14 flex flex-col justify-center bg-[#1c1c1c]">
+                        <div className="max-w-sm mx-auto w-full">
+                            <div className="mb-10">
+                                <h2 className="text-[15px] font-medium text-white mb-2 tracking-wide">Sign In</h2>
+                                <p className="text-slate-400 text-[13px]">Secure access to your luxury dashboard.</p>
+                            </div>
+
+                            {error && (
+                                <motion.div 
+                                    initial={{ opacity: 0, y: -10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className="bg-rose-500/10 text-rose-500 p-4 rounded-lg mb-8 text-xs font-bold border border-rose-500/20 flex items-center gap-3"
+                                >
+                                    <Shield className="w-4 h-4 shrink-0" />
+                                    {error}
+                                </motion.div>
+                            )}
+
+                            <motion.form 
+                                onSubmit={handleSubmit} 
+                                className="space-y-6"
+                                variants={containerVariants}
+                                initial="hidden"
+                                animate="show"
                             >
-                                <div className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center shrink-0">
-                                    <Shield className="w-4 h-4" />
+                                <motion.div variants={itemVariants} className="space-y-3 group">
+                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] transition-colors group-focus-within:text-[#f3a953] block">Work Email</label>
+                                    <div className="relative">
+                                        <input 
+                                            type="email" 
+                                            value={email}
+                                            onChange={(e) => setEmail(e.target.value)}
+                                            className="w-full px-4 py-3.5 bg-[#252525] rounded-lg outline-none focus:bg-[#2a2a2a] focus:ring-1 focus:ring-[#f3a953]/50 border border-transparent focus:border-[#f3a953]/50 transition-all text-sm font-medium text-white placeholder-slate-600 shadow-inner"
+                                            placeholder="admin@servicio.com"
+                                            required
+                                        />
+                                        <div className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 font-medium">
+                                            @
+                                        </div>
+                                    </div>
+                                </motion.div>
+
+                                <motion.div variants={itemVariants} className="space-y-3 group">
+                                    <div className="flex justify-between items-center">
+                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] transition-colors group-focus-within:text-[#f3a953]">Password</label>
+                                        <Link to="#" className="text-[10px] font-black text-[#f3a953] uppercase tracking-[0.2em] hover:text-amber-400 transition-colors">Forgot?</Link>
+                                    </div>
+                                    <div className="relative">
+                                        <input 
+                                            type="password" 
+                                            value={password}
+                                            onChange={(e) => setPassword(e.target.value)}
+                                            className="w-full px-4 py-3.5 bg-[#252525] rounded-lg outline-none focus:bg-[#2a2a2a] focus:ring-1 focus:ring-[#f3a953]/50 border border-transparent focus:border-[#f3a953]/50 transition-all text-sm font-medium text-white placeholder-slate-600 shadow-inner"
+                                            placeholder="••••••••"
+                                            required
+                                        />
+                                        <div className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500">
+                                            <Lock className="w-4 h-4" />
+                                        </div>
+                                    </div>
+                                </motion.div>
+
+                                <motion.button 
+                                    variants={itemVariants}
+                                    whileHover={{ scale: 1.02 }}
+                                    whileTap={{ scale: 0.98 }}
+                                    type="submit" 
+                                    disabled={loading}
+                                    className="w-full py-3.5 bg-[#f3a953] text-[#1c1c1c] font-medium rounded-lg hover:bg-[#e09b4c] transition-all duration-300 flex items-center justify-center gap-2 text-sm mt-4 shadow-lg shadow-[#f3a953]/20"
+                                >
+                                    {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : (
+                                        <>
+                                            Sign In To Account 
+                                            <Zap className="w-4 h-4" />
+                                        </>
+                                    )}
+                                </motion.button>
+                            </motion.form>
+
+                            <div className="mt-8 relative flex items-center justify-center">
+                                <div className="absolute inset-0 flex items-center">
+                                    <div className="w-full border-t border-white/5"></div>
                                 </div>
-                                {error}
-                            </motion.div>
-                        )}
-
-                        <motion.form 
-                            onSubmit={handleSubmit} 
-                            className="space-y-6"
-                            variants={containerVariants}
-                            initial="hidden"
-                            animate="show"
-                        >
-                            <motion.div variants={itemVariants} className="space-y-2 group">
-                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 transition-colors group-focus-within:text-amber-500">Work Email</label>
-                                <input 
-                                    type="email" 
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    className="w-full px-5 py-4 bg-slate-50/50 rounded-xl outline-none focus:bg-white focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 focus:scale-[1.02] border border-slate-200 hover:border-slate-300 transition-all font-bold text-slate-900 shadow-sm"
-                                    placeholder="admin@servicio.com"
-                                    required
-                                />
-                            </motion.div>
-
-                            <motion.div variants={itemVariants} className="space-y-2 group">
-                                <div className="flex justify-between items-center ml-1">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest transition-colors group-focus-within:text-amber-500">Password</label>
-                                    <Link to="#" className="text-[10px] font-black text-amber-600 uppercase tracking-widest hover:text-amber-700 transition-colors">Forgot?</Link>
+                                <div className="relative px-4 bg-[#1c1c1c] text-[9px] font-black uppercase tracking-[0.2em] text-slate-500">
+                                    OR
                                 </div>
-                                <input 
-                                    type="password" 
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    className="w-full px-5 py-4 bg-slate-50/50 rounded-xl outline-none focus:bg-white focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 focus:scale-[1.02] border border-slate-200 hover:border-slate-300 transition-all font-bold text-slate-900 shadow-sm"
-                                    placeholder="••••••••"
-                                    required
-                                />
-                            </motion.div>
+                            </div>
 
-                            <motion.button 
-                                variants={itemVariants}
-                                whileHover={{ scale: 1.02 }}
-                                whileTap={{ scale: 0.98 }}
-                                type="submit" 
-                                disabled={loading}
-                                className="w-full py-5 bg-slate-900 text-white font-black rounded-xl hover:bg-amber-600 shadow-lg shadow-slate-900/10 hover:shadow-amber-500/30 transition-all duration-300 flex items-center justify-center gap-3 text-sm group"
-                            >
-                                {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : (
-                                    <>
-                                        Sign In To Account 
-                                        <Rocket className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-                                    </>
-                                )}
-                            </motion.button>
-                        </motion.form>
+                            <div className="mt-8 text-center text-xs text-slate-400">
+                                New to our platform? <Link to="/register" className="text-white font-bold hover:text-[#f3a953] transition-colors ml-1">Create an account →</Link>
+                            </div>
 
-                        <div className="mt-12 pt-8 border-t border-slate-100 text-center">
-                            <p className="text-slate-400 font-bold text-sm mb-4">New to our platform?</p>
-                            <Link 
-                                to="/register" 
-                                className="inline-flex items-center gap-2 text-slate-900 hover:text-amber-600 font-black text-sm group transition-colors"
-                            >
-                                Create an account <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                            </Link>
-
-                            <div className="mt-8 pt-6 border-t border-slate-100 flex justify-center">
-                                <Link to="/partner" className="text-xs font-black text-slate-400 uppercase tracking-widest hover:text-primary-600 transition-colors">
-                                    Are you a professional? Partner with us
+                            <div className="mt-10 pt-8 flex justify-center text-center">
+                                <Link to="/partner" className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] hover:text-white transition-colors flex flex-col md:flex-row gap-1 md:gap-2">
+                                    <span>Are you a professional?</span> <span className="text-[#f3a953]">Partner with us</span>
                                 </Link>
                             </div>
                         </div>
                     </div>
+                </motion.div>
+            </div>
+
+            {/* Footer */}
+            <footer className="w-full p-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6 text-[11px] font-black uppercase tracking-widest text-slate-500 z-20 mt-auto bg-[#1c1c1c]">
+                <div className="flex flex-col sm:items-start items-center gap-2">
+                    <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 bg-black rounded-full flex items-center justify-center border border-[#f3a953]/50 overflow-hidden shadow-sm">
+                            <img src="/logo.png" alt="Servicio Logo" className="w-full h-full object-cover scale-110" />
+                        </div>
+                        <span className="text-lg font-bold text-amber-500 tracking-wide capitalize">Servicio</span>
+                    </div>
+                    <span className="mt-1">© 2024 Servicio Management System. All rights reserved.</span>
+                    <div className="text-[9px] text-slate-500 uppercase tracking-widest font-black mt-1">
+                        Engineered by <span className="text-amber-500">Jeeshan</span> (Backend) &amp; <span className="text-amber-500">Dipanshu</span> (Frontend)
+                    </div>
                 </div>
-            </motion.div>
+                <div className="flex gap-8">
+                    <Link to="#" className="hover:text-white transition-colors">Privacy Policy</Link>
+                    <Link to="#" className="hover:text-white transition-colors">Terms of Service</Link>
+                    <Link to="#" className="hover:text-white transition-colors">Contact Support</Link>
+                </div>
+            </footer>
         </div>
     );
 };

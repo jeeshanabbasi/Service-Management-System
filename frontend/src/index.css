@@ -7,15 +7,9 @@
   }
   
   body {
-    @apply antialiased text-slate-900 bg-[#faf9f6] relative;
+    @apply antialiased bg-[#111111] text-white relative;
     font-family: var(--primary-font);
-    background-color: #faf9f6;
-    background-image: 
-      radial-gradient(at 0% 0%, hsla(37, 95%, 80%, 0.4) 0px, transparent 50%),
-      radial-gradient(at 100% 0%, hsla(210, 100%, 85%, 0.4) 0px, transparent 50%),
-      radial-gradient(#e4e4e7 1px, transparent 1px);
-    background-size: 100% 100%, 100% 100%, 24px 24px;
-    background-attachment: fixed;
+    background-color: #111111;
   }
 
   /* Override component-level solid backgrounds to let the global mesh+grid shine through */

@@ -101,7 +101,7 @@ const ProviderDashboard = () => {
     const totalEarnings = bookings.filter(b => b.status === 'completed').reduce((acc, curr) => acc + curr.totalAmount, 0);
 
     return (
-        <div className="min-h-screen bg-[#faf9f6] pb-20 pt-28">
+        <div className="min-h-screen bg-[#111111] pb-20 pt-28 selection:bg-amber-500/30 selection:text-amber-200">
             <Toaster position="bottom-right" />
             
             <div className="container mx-auto px-6 max-w-7xl">
@@ -130,8 +130,8 @@ const ProviderDashboard = () => {
                             <span className="w-8 h-[2px] bg-blue-500" />
                             <span className="text-blue-600 font-black text-[10px] uppercase tracking-[0.3em]">{user?.name || 'Provider'} Workspace</span>
                         </div>
-                        <h1 className="text-5xl md:text-7xl font-black text-slate-900 tracking-tight leading-[0.9]">
-                            Your <span className="text-blue-600">Schedule.</span>
+                        <h1 className="text-5xl md:text-7xl font-black text-white tracking-tight leading-[0.9]">
+                            Your <span className="text-blue-500">Schedule.</span>
                         </h1>
                     </motion.div>
 
@@ -139,7 +139,7 @@ const ProviderDashboard = () => {
                     <motion.div 
                         initial={{ opacity: 0, x: 20 }}
                         animate={{ opacity: 1, x: 0 }}
-                        className="bg-white p-6 rounded-[2rem] border border-stone-200/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex items-center gap-8"
+                        className="bg-[#1c1c1c] p-6 rounded-[2rem] border border-white/5 shadow-2xl flex items-center gap-8"
                     >
                         <div>
                             <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Status Protocol</p>
@@ -149,7 +149,7 @@ const ProviderDashboard = () => {
                         </div>
                         <button 
                             onClick={toggleAvailability}
-                            className={`w-24 h-12 rounded-full p-1.5 transition-all duration-500 ease-in-out shadow-inner flex items-center ${isAvailable ? 'bg-emerald-500 shadow-emerald-500/20' : 'bg-slate-200'}`}
+                            className={`w-24 h-12 rounded-full p-1.5 transition-all duration-500 ease-in-out shadow-inner flex items-center ${isAvailable ? 'bg-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.3)]' : 'bg-[#151515] border border-white/10'}`}
                         >
                             <div className={`w-9 h-9 bg-white rounded-full shadow-md transition-transform duration-500 ease-in-out ${isAvailable ? 'translate-x-12' : 'translate-x-0'}`} />
                         </button>
@@ -170,12 +170,12 @@ const ProviderDashboard = () => {
                     {/* Main Feed (Left Side) */}
                     <div className="lg:col-span-8">
                         <div className="flex items-center gap-3 mb-8 px-2">
-                            <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center border border-blue-100">
-                                <Briefcase className="w-4 h-4 text-blue-600" />
+                            <div className="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center border border-blue-500/20">
+                                <Briefcase className="w-4 h-4 text-blue-400" />
                             </div>
                             <div>
-                                <h2 className="text-2xl font-black text-slate-900 tracking-tight">Assigned Jobs</h2>
-                                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mt-0.5">Manage your dispatch</p>
+                                <h2 className="text-2xl font-black text-white tracking-tight">Assigned Jobs</h2>
+                                <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mt-0.5">Manage your dispatch</p>
                             </div>
                         </div>
 
@@ -183,119 +183,119 @@ const ProviderDashboard = () => {
                             {bookings.length === 0 ? (
                                 <motion.div 
                                     initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-                                    className="glass-card rounded-[3rem] p-16 md:p-24 text-center border-dashed border-2 border-stone-200 bg-stone-50/50"
+                                    className="bg-[#1c1c1c] rounded-[3rem] p-16 md:p-24 text-center border-dashed border border-white/10"
                                 >
-                                    <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm border border-stone-100">
-                                        <Calendar className="text-slate-300 w-8 h-8" />
+                                    <div className="w-20 h-20 bg-[#151515] rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm border border-white/5">
+                                        <Calendar className="text-slate-500 w-8 h-8" />
                                     </div>
-                                    <h3 className="text-xl font-black text-slate-900 mb-2 tracking-tight">No Active Assignments</h3>
-                                    <p className="text-slate-500 font-bold text-sm max-w-sm mx-auto">Standby for incoming dispatch from the central system.</p>
+                                    <h3 className="text-xl font-black text-white mb-2 tracking-tight">No Active Assignments</h3>
+                                    <p className="text-slate-400 font-bold text-sm max-w-sm mx-auto">Standby for incoming dispatch from the central system.</p>
                                 </motion.div>
                             ) : (
-                                <div className="bg-white p-6 md:p-8 rounded-[3rem] shadow-[0_8px_30px_rgba(0,0,0,0.04)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] border border-stone-200/60 hover:border-amber-200 transition-all duration-300 space-y-6 max-h-[800px] overflow-y-auto">
+                                <div className="bg-[#1c1c1c] p-6 md:p-8 rounded-[3rem] shadow-2xl border border-white/5 transition-all duration-300 space-y-6 max-h-[800px] overflow-y-auto no-scrollbar">
                                     {[...bookings].sort((a, b) => new Date(b.createdAt || b.date) - new Date(a.createdAt || a.date)).map((booking, idx) => (
                                         <motion.div 
                                             key={booking._id}
                                         initial={{ opacity: 0, y: 20 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ delay: idx * 0.05 }}
-                                        className="bg-white p-8 md:p-10 rounded-[2.5rem] border border-stone-200/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] transition-all duration-300"
+                                        className="bg-[#151515] p-8 md:p-10 rounded-[2.5rem] border border-white/5 shadow-xl hover:shadow-[0_0_20px_rgba(255,255,255,0.05)] transition-all duration-300"
                                     >
-                                        <div className="flex flex-col md:flex-row justify-between items-start gap-6 mb-8 pb-8 border-b border-stone-100">
+                                        <div className="flex flex-col md:flex-row justify-between items-start gap-6 mb-8 pb-8 border-b border-white/5">
                                             <div>
                                                 <div className="flex items-center gap-3 mb-3">
                                                     <span className={`px-4 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-widest border ${
-                                                        booking.providerStatus === 'Pending' ? 'bg-amber-50 text-amber-600 border-amber-100' :
-                                                        booking.providerStatus === 'Rejected' ? 'bg-rose-50 text-rose-600 border-rose-100' :
-                                                        booking.status === 'completed' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 
-                                                        'bg-blue-50 text-blue-600 border-blue-100'
+                                                        booking.providerStatus === 'Pending' ? 'bg-amber-500/10 text-amber-500 border-amber-500/20' :
+                                                        booking.providerStatus === 'Rejected' ? 'bg-rose-500/10 text-rose-500 border-rose-500/20' :
+                                                        booking.status === 'completed' ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' : 
+                                                        'bg-blue-500/10 text-blue-400 border-blue-500/20'
                                                     }`}>
                                                         {booking.providerStatus === 'Pending' ? 'Action Required' : 
                                                          booking.providerStatus === 'Rejected' ? 'Rejected' : booking.status}
                                                     </span>
-                                                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">ID: #{booking._id.substring(0, 6)}</span>
+                                                    <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">ID: #{booking._id.substring(0, 6)}</span>
                                                 </div>
-                                                <h3 className="text-2xl font-black text-slate-900 tracking-tight">{booking.service?.title || booking.service?.name || 'Service Unlisted'}</h3>
+                                                <h3 className="text-2xl font-black text-white tracking-tight">{booking.service?.title || booking.service?.name || 'Service Unlisted'}</h3>
                                             </div>
                                             <div className="text-left md:text-right">
-                                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Total Pay</p>
-                                                <p className="text-3xl font-black text-slate-900">₹{booking.totalAmount}</p>
+                                                <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Total Pay</p>
+                                                <p className="text-3xl font-black text-emerald-400">₹{booking.totalAmount}</p>
                                             </div>
                                         </div>
 
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
                                             <div className="space-y-5">
                                                 <div className="flex items-center gap-4">
-                                                    <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center shrink-0 border border-stone-100">
+                                                    <div className="w-10 h-10 rounded-full bg-[#1c1c1c] flex items-center justify-center shrink-0 border border-white/5">
                                                         <Calendar className="w-4 h-4 text-slate-400" />
                                                     </div>
                                                     <div>
-                                                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Scheduled Date</p>
-                                                        <p className="font-black text-slate-900 text-sm">{new Date(booking.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</p>
+                                                        <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-0.5">Scheduled Date</p>
+                                                        <p className="font-black text-white text-sm">{new Date(booking.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</p>
                                                     </div>
                                                 </div>
                                                 <div className="flex items-center gap-4">
-                                                    <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center shrink-0 border border-stone-100">
+                                                    <div className="w-10 h-10 rounded-full bg-[#1c1c1c] flex items-center justify-center shrink-0 border border-white/5">
                                                         <Clock className="w-4 h-4 text-slate-400" />
                                                     </div>
                                                     <div>
-                                                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Time Slot</p>
-                                                        <p className="font-black text-slate-900 text-sm">{booking.timeSlot}</p>
+                                                        <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-0.5">Time Slot</p>
+                                                        <p className="font-black text-white text-sm">{booking.timeSlot}</p>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div className="space-y-5">
                                                 <div className="flex items-center gap-4">
-                                                    <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center shrink-0 border border-stone-100">
+                                                    <div className="w-10 h-10 rounded-full bg-[#1c1c1c] flex items-center justify-center shrink-0 border border-white/5">
                                                         <User className="w-4 h-4 text-slate-400" />
                                                     </div>
                                                     <div>
-                                                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Customer Name</p>
-                                                        <p className="font-black text-slate-900 text-sm">{booking.user?.name}</p>
+                                                        <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-0.5">Customer Name</p>
+                                                        <p className="font-black text-white text-sm">{booking.user?.name}</p>
                                                     </div>
                                                 </div>
                                                 <div className="flex items-center gap-4">
-                                                    <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center shrink-0 border border-stone-100">
+                                                    <div className="w-10 h-10 rounded-full bg-[#1c1c1c] flex items-center justify-center shrink-0 border border-white/5">
                                                         <MapPin className="w-4 h-4 text-slate-400" />
                                                     </div>
                                                     <div>
-                                                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Location</p>
-                                                        <p className="font-black text-slate-900 text-sm line-clamp-1">{booking.address?.street}, {booking.address?.city}</p>
+                                                        <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-0.5">Location</p>
+                                                        <p className="font-black text-white text-sm line-clamp-1">{booking.address?.street}, {booking.address?.city}</p>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
 
                                         {booking.providerStatus === 'Pending' ? (
-                                            <div className="pt-6 border-t border-stone-100 flex flex-col sm:flex-row justify-end gap-4">
+                                            <div className="pt-6 border-t border-white/5 flex flex-col sm:flex-row justify-end gap-4">
                                                 <button 
                                                     onClick={() => handleUpdateStatus(booking._id, 'pending', 'Rejected')}
-                                                    className="w-full sm:w-auto px-8 py-4 bg-white border border-stone-200 text-slate-600 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:border-rose-200 hover:text-rose-600 transition-all text-center"
+                                                    className="w-full sm:w-auto px-8 py-4 bg-[#1c1c1c] border border-white/5 text-slate-400 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:border-rose-500/50 hover:text-rose-500 transition-all text-center"
                                                 >
                                                     Reject Assignment
                                                 </button>
                                                 <button 
                                                     onClick={() => handleUpdateStatus(booking._id, 'confirmed', 'Accepted')}
-                                                    className="w-full sm:w-auto px-10 py-4 bg-slate-900 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-blue-600 transition-all shadow-xl shadow-slate-900/10"
+                                                    className="w-full sm:w-auto px-10 py-4 bg-emerald-500 hover:bg-emerald-400 text-slate-900 rounded-2xl font-black text-[10px] uppercase tracking-widest flex items-center justify-center gap-3 transition-all shadow-xl"
                                                 >
                                                     <CheckCircle className="w-4 h-4" /> Accept Job
                                                 </button>
                                             </div>
                                         ) : booking.providerStatus === 'Accepted' && booking.status !== 'completed' && booking.status !== 'cancelled' ? (
-                                            <div className="pt-6 border-t border-stone-100 flex justify-end">
+                                            <div className="pt-6 border-t border-white/5 flex justify-end">
                                                 <button 
                                                     onClick={() => handleUpdateStatus(booking._id, 'completed')}
-                                                    className="w-full sm:w-auto px-10 py-4 bg-emerald-500 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-emerald-600 transition-all shadow-xl shadow-emerald-500/20"
+                                                    className="w-full sm:w-auto px-10 py-4 bg-blue-500 hover:bg-blue-400 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest flex items-center justify-center gap-3 transition-all shadow-xl shadow-blue-500/20"
                                                 >
                                                     <CheckCircle className="w-4 h-4" /> Mark as Completed
                                                 </button>
                                             </div>
                                         ) : booking.status === 'completed' && booking.rating ? (
-                                            <div className="pt-6 border-t border-stone-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Customer Feedback</p>
-                                                <div className="flex items-center gap-1 bg-amber-50 px-4 py-2 rounded-xl border border-amber-100">
+                                            <div className="pt-6 border-t border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                                <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Customer Feedback</p>
+                                                <div className="flex items-center gap-1 bg-amber-500/10 px-4 py-2 rounded-xl border border-amber-500/20">
                                                     {[...Array(5)].map((_, i) => (
-                                                        <Star key={i} className={`w-4 h-4 ${i < booking.rating ? 'text-amber-500 fill-amber-500' : 'text-amber-200'}`} />
+                                                        <Star key={i} className={`w-4 h-4 ${i < booking.rating ? 'text-amber-500 fill-amber-500' : 'text-amber-500/20'}`} />
                                                     ))}
                                                 </div>
                                             </div>
@@ -367,24 +367,24 @@ const ProviderDashboard = () => {
                             initial={{ opacity: 0, x: 20 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ duration: 0.5, delay: 0.2 }}
-                            className="bg-white p-8 rounded-[3rem] border border-stone-200/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
+                            className="bg-[#1c1c1c] p-8 rounded-[3rem] border border-white/5 shadow-2xl"
                         >
                             <div className="flex items-center gap-3 mb-6">
                                 <ShieldCheck className="w-5 h-5 text-blue-500" />
-                                <h3 className="font-black text-slate-900">Provider Guidelines</h3>
+                                <h3 className="font-black text-white">Provider Guidelines</h3>
                             </div>
                             <ul className="space-y-4">
                                 <li className="flex gap-3 text-sm">
                                     <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0 mt-1.5" />
-                                    <span className="text-slate-600 font-bold">Accept dispatch quickly to secure the assigned payload.</span>
+                                    <span className="text-slate-400 font-bold">Accept dispatch quickly to secure the assigned payload.</span>
                                 </li>
                                 <li className="flex gap-3 text-sm">
                                     <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0 mt-1.5" />
-                                    <span className="text-slate-600 font-bold">Always verify customer coordinates upon arrival.</span>
+                                    <span className="text-slate-400 font-bold">Always verify customer coordinates upon arrival.</span>
                                 </li>
                                 <li className="flex gap-3 text-sm">
                                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0 mt-1.5" />
-                                    <span className="text-slate-600 font-bold">Mark jobs as completed immediately for prompt settlements.</span>
+                                    <span className="text-slate-400 font-bold">Mark jobs as completed immediately for prompt settlements.</span>
                                 </li>
                             </ul>
                         </motion.div>

@@ -7,6 +7,8 @@ import Register from './pages/Register';
 import ServicesList from './pages/ServicesList';
 import ServiceDetail from './pages/ServiceDetail';
 import Dashboard from './pages/Dashboard';
+import Profile from './pages/Profile';
+import MyBookings from './pages/MyBookings';
 import AdminDashboard from './pages/AdminDashboard';
 import ProviderDashboard from './pages/ProviderDashboard';
 import ProviderRegister from './pages/ProviderRegister';
@@ -32,6 +34,8 @@ const AnimatedRoutes = () => {
         <Route path="/services" element={<PageWrapper><ServicesList /></PageWrapper>} />
         <Route path="/services/:id" element={<PageWrapper><ServiceDetail /></PageWrapper>} />
         <Route path="/dashboard" element={<PageWrapper><Dashboard /></PageWrapper>} />
+        <Route path="/profile" element={<PageWrapper><Profile /></PageWrapper>} />
+        <Route path="/my-bookings" element={<PageWrapper><MyBookings /></PageWrapper>} />
         <Route path="/admin" element={<PageWrapper><AdminDashboard /></PageWrapper>} />
         <Route path="/provider-dashboard" element={<PageWrapper><ProviderDashboard /></PageWrapper>} />
         <Route path="/partner" element={<PageWrapper><ProviderRegister /></PageWrapper>} />
@@ -67,7 +71,7 @@ function App() {
     <AuthProvider>
       <CartProvider>
         <Router>
-          <div className="min-h-screen flex flex-col bg-white font-sans text-slate-900 overflow-x-hidden">
+          <div className="min-h-screen flex flex-col bg-[#111111] font-sans text-slate-300 overflow-x-hidden">
             <Navbar />
             <main className="flex-grow pt-24">
               <AnimatedRoutes />
