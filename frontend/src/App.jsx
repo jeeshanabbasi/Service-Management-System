@@ -20,7 +20,7 @@ import axios from 'axios';
 import { AnimatePresence, motion } from 'framer-motion';
 
 // Set up base URL for axios
-axios.defaults.baseURL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+axios.defaults.baseURL = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000');
 
 const AnimatedRoutes = () => {
   const location = useLocation();
